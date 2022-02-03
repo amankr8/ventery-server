@@ -8,7 +8,7 @@ exports.uploadImages = async (files) => {
         // Upload images to cloudinary
         for(const file of files) {
             const result = await cloudinary.uploader.upload(file.path, {
-                folder: 'buyandsell/items',
+                folder: 'ventery/items',
             })
             
             images.push({
@@ -45,7 +45,7 @@ exports.deleteAllImages = async () => {
         }
 
         // Delete images from cloudinary
-        await cloudinary.api.delete_resources_by_prefix('buyandsell/items')
+        await cloudinary.api.delete_resources_by_prefix('ventery/items')
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })

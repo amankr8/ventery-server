@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amankr8/buyandsell-server.git"
+    "url": "git+https://github.com/amankr8/ventery-server.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/amankr8/buyandsell-server/issues"
+    "url": "https://github.com/amankr8/ventery-server/issues"
   },
-  "homepage": "https://github.com/amankr8/buyandsell-server#readme",
+  "homepage": "https://github.com/amankr8/ventery-server#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.28.1",
