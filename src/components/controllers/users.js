@@ -48,12 +48,12 @@ exports.signUp = async (req, res) => {
 
 exports.signIn = async (req, res) => {
     try {
-        // Check if input is valid
+        // Verify
         const user = await User.findOne({ username: req.body.username.toLowerCase() })
         if(!user) {
             return res.status(400).json({ message: 'Invalid credentials!' })
         }
-        const match = await bcrypt.compare(req.body.password, isUser.password)
+        const match = await bcrypt.compare(req.body.password, user.password)
         if(!match) {
             return res.status(400).json({ message: 'Invalid credentials!' })
         }
@@ -70,6 +70,7 @@ exports.signIn = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
+        // Verify
         const doc = await User.findById(req.params.id)
 
         if(!doc) {
@@ -95,6 +96,7 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserItems = async (req, res) => {
     try {
+        // Verify
         const doc = await User.findById(req.params.id)
 
         if(!doc) {
@@ -111,7 +113,7 @@ exports.getUserItems = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await User.findById(req.params.id)
         
         if(!doc) {
@@ -149,7 +151,7 @@ exports.updateUser = async (req, res) => {
 
 exports.updatePass = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await User.findById(req.params.id)
         
         if(!doc) {
@@ -173,7 +175,7 @@ exports.updatePass = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await User.findById(req.params.id)
         
         if(!doc) {
@@ -202,7 +204,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.deleteUserItems = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await User.findById(req.params.id)
         
         if(!doc) {
@@ -224,7 +226,7 @@ exports.deleteUserItems = async (req, res) => {
 
 exports.deleteUsers = async (req, res) => {
     try {
-        //Authorization
+        // Verify
         if(req.user.username !== 'admin') {
             return res.status(401).json({ message: 'Unauthorized!' })
         }

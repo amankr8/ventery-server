@@ -48,7 +48,7 @@ exports.createItem = async (req, res) => {
 
 exports.updateItem = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await Item.findById(req.params.id)
 
         if(!doc) {
@@ -69,7 +69,7 @@ exports.updateItem = async (req, res) => {
 
 exports.deleteItem = async (req, res) => {
     try {
-        // Authorization
+        // Verify
         const doc = await Item.findById(req.params.id)
 
         if(!doc) {

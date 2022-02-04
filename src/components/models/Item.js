@@ -12,7 +12,7 @@ const itemSchema = new mongoose.Schema({
         type: Number
     },
     category: {
-        type: String
+        type: Object
     },
     owner: {
         type: Object,
@@ -32,8 +32,7 @@ const itemSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: new Date(),
-        immutable: true
+        default: new Date()
     }
 })
 
