@@ -39,7 +39,7 @@ exports.createItem = async (req, res) => {
         const images = req.files ? await helper.uploadImages(req.files) : []
 
         // Set Category
-        const category = await Category.findOne({ name: req.body.category })
+        let category = await Category.findOne({ name: req.body.category })
         if(!category) {
             category = await Category.findOne({ name: 'Others' })
         }
@@ -72,7 +72,7 @@ exports.updateItem = async (req, res) => {
             category = await Category.findOne({ name: req.body.category })
         }
 
-        const update = { ...req.body, category }
+        const update = { ...req.body, category, date: new Date() }
         const updatedDoc = await Item.findByIdAndUpdate(req.params.id, update, { new: true })
         res.json(updatedDoc)
     } catch (error) {

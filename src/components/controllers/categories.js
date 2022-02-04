@@ -88,6 +88,7 @@ exports.deleteCategory = async (req, res) => {
         }
 
         await Category.findByIdAndDelete(req.params.id)
+        res.json('Category deleted!')
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })
@@ -102,6 +103,7 @@ exports.deleteCategories = async (req, res) => {
         }
 
         await Category.deleteMany()
+        res.json('All categories deleted!')
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })
