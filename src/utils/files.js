@@ -4,7 +4,7 @@ var path = require('path')
 exports.storage = multer.diskStorage({
     destination: 'public/uploads/',
     filename: function (req, file, cb) {
-        cb(null, 'furida_' + Date.now() + path.extname(file.originalname))
+        cb(null, 'ventery_' + Date.now() + path.extname(file.originalname))
     }
 })
 

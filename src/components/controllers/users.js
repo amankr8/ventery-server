@@ -9,15 +9,25 @@ const { deleteImages } = require('../helpers/items')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+// Reusable function
+const deleteItemsbyUser = async(user_id) => {
+    const items = await Item.find({ 'owner._id': user_id })
+
+    for(const item of items) {
+        await Item.findByIdAndDelete(item._id)
+        item.images && await deleteImages(item.images)
+    }
+}
+
 exports.signUp = async (req, res) => {
     try {
         // Check if user already exists
-        const isUser = await User.findOne({ email: req.body.email })
-        if(isUser) {
+        const user = await User.findOne({ email: req.body.email })
+        if(user) {
             return res.status(400).json({ message: 'User already exists!' })
         }
-        const isUsername = await User.findOne({ username: req.body.username.toLowerCase() })
-        if(isUsername) {
+        const username = await User.findOne({ username: req.body.username.toLowerCase() })
+        if(username) {
             return res.status(400).json({ message: 'Username unavailable! try another one' })
         }
 
@@ -39,22 +49,19 @@ exports.signUp = async (req, res) => {
 exports.signIn = async (req, res) => {
     try {
         // Check if input is valid
-        const isUser = await User.findOne({ username: req.body.username.toLowerCase() })
-        if(!isUser) {
+        const user = await User.findOne({ username: req.body.username.toLowerCase() })
+        if(!user) {
             return res.status(400).json({ message: 'Invalid credentials!' })
         }
-        const isMatch = await bcrypt.compare(req.body.password, isUser.password)
-        if(!isMatch) {
+        const match = await bcrypt.compare(req.body.password, isUser.password)
+        if(!match) {
             return res.status(400).json({ message: 'Invalid credentials!' })
         }
 
         // Generate token
-        const token = jwt.sign({ id: isUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
 
-        res.json({
-            user: isUser.username,
-            token: token
-        })
+        res.json({ user, token })
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })
@@ -116,9 +123,11 @@ exports.updateUser = async (req, res) => {
         }
 
         // Check valid username
-        const isUsername = await User.findOne({ username: req.body?.username?.toLowerCase() })
-        if(isUsername) {
-            return res.status(400).json({ message: 'Username unavailable! try another one' })
+        if(req.body?.username) {
+            const username = await User.findOne({ username: req.body.username.toLowerCase() })
+            if(username) {
+                return res.status(400).json({ message: 'Username unavailable! try another one' })
+            }
         }
 
         // Update image
@@ -154,8 +163,7 @@ exports.updatePass = async (req, res) => {
         // Encrypt password
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-        const update = { ...req.body, password: hashedPassword }
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, update, { new: true })
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { password: hashedPassword }, { new: true })
         res.json(updatedUser)
     } catch (error) {
         console.error(error)
@@ -183,14 +191,9 @@ exports.deleteUser = async (req, res) => {
         doc.image && await helper.deleteImage(doc.image)
 
         // Delete related user items
-        const items = await Item.find({ 'owner._id': doc._id })
+        await deleteItemsbyUser(doc._id)
 
-        for(const item of items) {
-            await Item.findByIdAndDelete(item._id)
-            item.images && await deleteImages(item.images)
-        }
-
-        res.json('User deleted successfully!')
+        res.json('User and their items deleted successfully!')
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })
@@ -210,12 +213,7 @@ exports.deleteUserItems = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized!' })
         }
 
-        const items = await Item.find({ owner_id: doc._id })
-
-        for(const item of items) {
-            await Item.findByIdAndDelete(item._id)
-            item.images && await deleteImages(item.images)
-        }
+        await deleteItemsbyUser(doc._id)
 
         res.json('User items deleted successfully!')
     } catch (error) {
