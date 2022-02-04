@@ -61,7 +61,7 @@ exports.signIn = async (req, res) => {
         // Generate token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
 
-        res.json({ user, token })
+        res.json({ user: user.username, token })
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal Server Error" })

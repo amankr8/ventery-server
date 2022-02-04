@@ -1,4 +1,5 @@
 const Item = require('../models/Item')
+const Category = require('../models/Category')
 
 // helpers
 const helper = require('../helpers/items')
@@ -37,7 +38,13 @@ exports.createItem = async (req, res) => {
         // Upload images
         const images = req.files ? await helper.uploadImages(req.files) : []
 
-        const newItem = new Item({ ...req.body, images, owner })
+        // Set Category
+        const category = await Category.findOne({ name: req.body.category })
+        if(!category) {
+            category = await Category.findOne({ name: 'Others' })
+        }
+
+        const newItem = new Item({ ...req.body, images, category, owner })
         await newItem.save()
         res.json(newItem)
     } catch (error) {
@@ -59,7 +66,14 @@ exports.updateItem = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized!' })
         }
 
-        const updatedDoc = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        // Set category
+        const category = doc.category
+        if(req.user.category) {
+            category = await Category.findOne({ name: req.body.category })
+        }
+
+        const update = { ...req.body, category }
+        const updatedDoc = await Item.findByIdAndUpdate(req.params.id, update, { new: true })
         res.json(updatedDoc)
     } catch (error) {
         console.error(error)
