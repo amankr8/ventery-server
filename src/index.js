@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: false }))
 // Endpoints definitions
 app.use('/items', require('./components/routes/items'))
 app.use('/users', require('./components/routes/users'))
+app.use('/categories', require('./components/routes/categories'))
 
 // Render the root page of the application
 app.get('/', (res) => {
