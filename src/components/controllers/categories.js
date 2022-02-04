@@ -1,4 +1,5 @@
 const Category = require('../models/Category')
+const Item = require('../models/Item')
 
 exports.getCategory = async (req, res) => {
     try {
@@ -18,6 +19,24 @@ exports.getCategory = async (req, res) => {
 exports.getCategories = async (req, res) => {
     try {
         const docs = await Category.find()
+        res.json(docs)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+exports.getCategoryItems = async (req, res) => {
+    try {
+        // Verify
+        const doc = await User.findById(req.params.id)
+
+        if(!doc) {
+            return res.status(404).json({ message: 'Unknown id! recheck' })
+        }
+
+        // Get items by category
+        const docs = await Category.find({ 'category.name': doc.name })
         res.json(docs)
     } catch (error) {
         console.error(error)

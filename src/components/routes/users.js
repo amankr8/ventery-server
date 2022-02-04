@@ -11,7 +11,7 @@ const upload = multer({ dest: 'public/uploads/profiles' })
 // Authorization middleware
 const auth = require('../../middleware/auth')
 
-// {{baseURL}}/users
+// Route --> {{baseURL}}/users
 router.post('/signup', upload.single('image'), users.signUp)                      // Signup a new user
 router.post('/signin', users.signIn)                                              // Signin a user
 router.get('/:id', users.getUser)                                                 // Get a user

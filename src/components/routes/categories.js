@@ -7,7 +7,7 @@ const categories = require('../controllers/categories')
 // Authorization middleware
 const auth = require('../../middleware/auth')
 
-// {{baseURL}}/categories
+// Route --> {{baseURL}}/categories
 router.get('/:id', categories.getCategory)
 router.get('/', categories.getCategories)
 router.get('/:id/items', categories.getCategoryItems)

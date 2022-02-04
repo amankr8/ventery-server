@@ -24,9 +24,7 @@ app.use('/users', require('./components/routes/users'))
 app.use('/categories', require('./components/routes/categories'))
 
 // Render the root page of the application
-app.get('/', (res) => {
-	res.render('index')
-})
+app.get('/', (req, res) => { res.render('index') })
 
 // Start server
 const port = process.env.PORT || 3000
