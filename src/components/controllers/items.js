@@ -72,6 +72,12 @@ exports.updateItem = async (req, res) => {
             category = await Category.findOne({ name: req.body.category })
         }
 
+        // Delete images
+        
+
+        // Update images
+
+
         const update = { ...req.body, category, date: new Date() }
         const updatedDoc = await Item.findByIdAndUpdate(req.params.id, update, { new: true })
         res.json(updatedDoc)
