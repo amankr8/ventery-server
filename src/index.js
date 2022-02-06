@@ -27,7 +27,7 @@ app.use('/categories', require('./components/routes/categories'))
 app.get('/', (req, res) => { res.render('index') })
 
 // Start server
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 app.listen(port, () => {
 	console.log(`Server is listening at http://localhost:${port}`)
 })
