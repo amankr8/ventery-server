@@ -9,7 +9,7 @@ const multer  = require('multer')
 const upload = multer({ dest: 'public/uploads/items' })
 
 // Authorization middleware
-const auth = require('../../middleware/auth')
+const auth = require('../middleware/auth')
 
 // Route --> {{baseURL}}/items
 router.get('/:id', items.getItem)                                                 // Get a single item

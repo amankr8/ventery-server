@@ -2,7 +2,7 @@ const Item = require('../models/Item')
 const Category = require('../models/Category')
 
 // helpers
-const helper = require('../helpers/items')
+const { uploadArray, deleteArray, deleteAll } = require('../helpers/cloudinary')
 
 exports.getItem = async (req, res) => {
     try {
@@ -36,7 +36,7 @@ exports.createItem = async (req, res) => {
         const owner = { _id, email }
 
         // Upload images
-        const images = req.files ? await helper.uploadImages(req.files) : []
+        const images = req.files ? await uploadArray(req.files, 'items') : []
 
         // Set Category
         let category = await Category.findOne({ name: req.body.category })
@@ -104,7 +104,7 @@ exports.deleteItem = async (req, res) => {
         await Item.findByIdAndDelete(req.params.id)
 
         // Delete images
-        doc.images && await helper.deleteImages(doc.images)
+        doc.images && await deleteArray(doc.images, 'items')
         res.json('Item deleted successfully!')
     } catch (error) {
         console.error(error)
@@ -121,7 +121,7 @@ exports.deleteItems = async (req, res) => {
         await Item.deleteMany()
         
         // Delete all item images
-        await helper.deleteAllImages()
+        await deleteAll('items')
         res.json('All items deleted successfully!')
     } catch (error) {
         console.error(error)

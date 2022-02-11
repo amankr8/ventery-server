@@ -9,7 +9,7 @@ const multer  = require('multer')
 const upload = multer({ dest: 'public/uploads/profiles' })
 
 // Authorization middleware
-const auth = require('../../middleware/auth')
+const auth = require('../middleware/auth')
 
 // Route --> {{baseURL}}/users
 router.post('/signup', upload.single('image'), users.signUp)                      // Signup a new user

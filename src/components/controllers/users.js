@@ -2,8 +2,7 @@ const User = require('../models/User')
 const Item = require('../models/Item')
 
 // helpers
-const helper = require('../helpers/users')
-const { deleteImages } = require('../helpers/items')
+const { uploadSingle, deleteSingle, deleteArray, deleteAll } = require('../helpers/cloudinary')
 
 // Authentication utils
 const bcrypt = require('bcryptjs')
@@ -15,7 +14,7 @@ const deleteItemsbyUser = async(user_id) => {
 
     for(const item of items) {
         await Item.findByIdAndDelete(item._id)
-        item.images && await deleteImages(item.images)
+        item.images && await deleteArray(item.images, 'items')
     }
 }
 
@@ -32,7 +31,7 @@ exports.signUp = async (req, res) => {
         }
 
         // Upload image
-        const image = req.file ? await helper.uploadImage(req.file) : null
+        const image = req.file ? await uploadImage(req.file, 'users') : null
 
         // Encrypt password
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -135,8 +134,8 @@ exports.updateUser = async (req, res) => {
         // Update image
         const image = doc.image
         if(req.file) {
-            doc.image && await helper.deleteImage(doc.image)
-            image = await helper.uploadImage(req.file)
+            doc.image && await deleteSingle(doc.image, 'users')
+            image = await uploadSingle(req.file, 'users')
         }
 
         req.body.password = undefined
@@ -190,7 +189,7 @@ exports.deleteUser = async (req, res) => {
         await User.findByIdAndDelete(req.params.id)
 
         // Delete user image
-        doc.image && await helper.deleteImage(doc.image)
+        doc.image && await deleteSingle(doc.image, 'users')
 
         // Delete related user items
         await deleteItemsbyUser(doc._id)
@@ -234,7 +233,7 @@ exports.deleteUsers = async (req, res) => {
         await User.deleteMany()
         
         // Delete all user images
-        await helper.deleteAllImages()
+        await deleteAll('users')
         res.json('All users deleted successfully!')
     } catch (error) {
         console.error(error)

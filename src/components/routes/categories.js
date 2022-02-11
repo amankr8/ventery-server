@@ -5,7 +5,7 @@ const router = express.Router()
 const categories = require('../controllers/categories')
 
 // Authorization middleware
-const auth = require('../../middleware/auth')
+const auth = require('../middleware/auth')
 
 // Route --> {{baseURL}}/categories
 router.get('/:id', categories.getCategory)
